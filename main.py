@@ -114,6 +114,9 @@ class MainWindow(QMainWindow):
         save_action = main_tool_bar.addAction('Save')
         save_action.triggered.connect(self.save)
 
+        build_action = main_tool_bar.addAction('Build')
+        build_action.triggered.connect(self.build)
+
         main_layout = QVBoxLayout()
 
         self.name_program_line_edit = QLineEdit()
@@ -184,6 +187,11 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(icon)
 
     def save(self):
+        """
+        Функция сохранения статичного конфига.
+
+        """
+
         global LIST_FILES, NAME_PROGRAM, ICON_PROGRAM
         LIST_FILES = self.list_files
         NAME_PROGRAM = self.name_program_line_edit.text()
@@ -211,6 +219,38 @@ ICON_PROGRAM = {}
             ))
 
         self.update_states()
+
+    def build(self):
+        """
+        Функция для сборки текущего скрипта в ехе.
+
+        """
+
+        # self.save()
+
+        icon_file_name = 'app.ico'
+        icon = qicon_from_base64(ICON_PROGRAM)
+        pixmap = icon.pixmap(ICON_SIZE)
+        pixmap.save(icon_file_name)
+        print('Save ico:', icon_file_name)
+
+        from subprocess import Popen, PIPE
+        with Popen('pyinstaller --onefile --icon={} -n "{}" main.py'.format(icon_file_name, NAME_PROGRAM),
+                   universal_newlines=True, stdout=PIPE, stderr=PIPE) as process:
+            # print('OUT:')
+            # for line in process.stdout:
+            #     print(line, end='')
+            #
+            # print('ERR:')
+            for line in process.stderr:
+                print(line, end='')
+            print()
+            print('-' * 10)
+
+        import os
+        if os.path.exists(icon_file_name):
+            print('Remove ico:', icon_file_name)
+            os.remove(icon_file_name)
 
     def eventFilter(self, obj, event):
         if obj == self.link_list_view or obj == self.path_to_icon_program_line_edit:
