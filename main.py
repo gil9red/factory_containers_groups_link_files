@@ -288,7 +288,9 @@ ICON_PROGRAM = {}
 
 # TODO: http://doc.qt.io/qt-4.8/qlistview.html
 # TODO: http://doc.qt.io/qt-5/qabstractlistmodel.html
-
+# TODO: добавление / удаление через кнопку
+# TODO: логирование в окне программы
+# TODO: сгенерированная прога не имеет возможности добавления / изменения компонентов -- только readonly
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
