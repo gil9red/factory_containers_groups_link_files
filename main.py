@@ -88,14 +88,14 @@ except:
 
 def get_target_path_with_args_from_lnk(file_name):
     """
-    Возвращает путь к файлу на который ссылается lnk и аргументы.
+    Возвращает кортеэ из пути к файлу на который ссылается lnk и аргументы.
 
     """
 
     import win32com.client
     shell = win32com.client.Dispatch("WScript.Shell")
     shortcut = shell.CreateShortCut(file_name)
-    return shortcut.Targetpath + " " + shortcut.Arguments
+    return shortcut.Targetpath, shortcut.Arguments
 
 
 class MainWindow(QMainWindow):
@@ -140,11 +140,13 @@ class MainWindow(QMainWindow):
             self.add_file_data(file_data)
 
     def add_file_data(self, file_data):
-        print(file_data)
+        print(file_data['name'], file_data['file_name'], sep=', ')
 
         # Работаем только с файлами
         import os
-        if not os.path.isfile(file_data['target']):
+        file_name = file_data['file_name']
+        if not os.path.isfile(file_name):
+            print('file_name is not file:', file_name)
             return
 
         self.list_files.append(file_data)
@@ -152,7 +154,7 @@ class MainWindow(QMainWindow):
         icon = qicon_from_base64(file_data['icon'])
 
         item = QListWidgetItem(icon, file_data['name'])
-        item.setToolTip(file_data['name'] + "\n\n" + file_data['target'])
+        item.setToolTip(file_data['name'] + "\n\n" + file_data['file_name'])
         self.link_list_view.addItem(item)
 
     def add_file(self, file_name):
@@ -161,14 +163,15 @@ class MainWindow(QMainWindow):
         file_info = QFileInfo(file_name)
 
         name = file_info.baseName()
-        target = file_name
+        args = None
         if file_info.isSymLink():
-            target = get_target_path_with_args_from_lnk(file_name)
+            file_name, args = get_target_path_with_args_from_lnk(file_name)
 
         base64_image = get_icon_base64(file_name)
         file_data = {
             'name': name,
-            'target': target,
+            'file_name': file_name,
+            'args': args,
             'icon': base64_image,
         }
         self.add_file_data(file_data)
