@@ -133,7 +133,7 @@ ICON_PROGRAM = {}
 
         """
 
-        # self.save()
+        self.save()
 
         icon_file_name = 'app.ico'
 
