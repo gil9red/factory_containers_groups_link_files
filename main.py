@@ -206,6 +206,11 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(icon)
 
     def run(self):
+        """
+        Функция для запуска указанного файла.
+
+        """
+
         file_data = self.link_list_view.current_item_file_data()
         file_name = file_data['file_name'] + " " + file_data['args']
 
