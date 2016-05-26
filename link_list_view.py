@@ -168,8 +168,13 @@ class LinkListView(QWidget):
 
         file_name = file_data['file_name'] + " " + file_data['args']
 
+        # TODO: Посмотреть рабочую папку ярлыков, возможно она отличается от
+        # папки с файлами, на которые указывают ярлыки
         import os
-        os.system('"{}"'.format(file_name))
+        import subprocess
+
+        # Вызов файла из его папки
+        subprocess.Popen(file_name, cwd=os.path.dirname(file_name))
 
 
 if __name__ == '__main__':
