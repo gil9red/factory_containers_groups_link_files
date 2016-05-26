@@ -115,8 +115,10 @@ class MainWindow(QMainWindow):
 
         main_tool_bar = self.addToolBar('main_tool_bar')
 
+        # TODO: перенести в class LinkListView
         run_action = main_tool_bar.addAction('Run')
-        run_action.triggered.connect(self.run)
+        # run_action.triggered.connect(self.run)
+        run_action.triggered.connect(self.link_list_view.run)
 
         save_action = main_tool_bar.addAction('Save')
         save_action.triggered.connect(self.save)
@@ -205,17 +207,20 @@ class MainWindow(QMainWindow):
         icon = qicon_from_base64(ICON_PROGRAM)
         self.setWindowIcon(icon)
 
-    def run(self):
-        """
-        Функция для запуска указанного файла.
-
-        """
-
-        file_data = self.link_list_view.current_item_file_data()
-        file_name = file_data['file_name'] + " " + file_data['args']
-
-        import os
-        os.system('"{}"'.format(file_name))
+    # def run(self):
+    #     """
+    #     Функция для запуска указанного файла.
+    #
+    #     """
+    #
+    #     file_data = self.link_list_view.current_item_file_data()
+    #     if file_data is None:
+    #         return
+    #
+    #     file_name = file_data['file_name'] + " " + file_data['args']
+    #
+    #     import os
+    #     os.system('"{}"'.format(file_name))
 
     def save(self):
         """
@@ -268,9 +273,11 @@ ICON_PROGRAM = {}
         pixmap.save(icon_file_name)
         print('Save ico:', icon_file_name)
 
+        build_command = 'pyinstaller --onefile --windowed --icon={} -n "{}" link_list_view.py'.format(icon_file_name, NAME_PROGRAM)
+        print('build_command:', build_command)
+
         from subprocess import Popen, PIPE
-        with Popen('pyinstaller --onefile --icon={} -n "{}" main.py'.format(icon_file_name, NAME_PROGRAM),
-                   universal_newlines=True, stdout=PIPE, stderr=PIPE) as process:
+        with Popen(build_command, universal_newlines=True, stdout=PIPE, stderr=PIPE) as process:
             # print('OUT:')
             # for line in process.stdout:
             #     print(line, end='')

@@ -81,6 +81,9 @@ class LinkListView(QWidget):
         self.link_list_view.setMovement(QListView.Static)
         self.link_list_view.setResizeMode(QListView.Adjust)
         self.link_list_view.setGridSize(QSize(ICON_SIZE, ICON_SIZE))
+
+        self.link_list_view.itemDoubleClicked.connect(self.run)
+
         # self.link_list_view.installEventFilter(self)
         self.setAcceptDrops(True)
 
@@ -142,12 +145,31 @@ class LinkListView(QWidget):
     def current_item(self):
         return self.link_list_view.currentItem()
 
-    def current_item_file_data(self):
-        item = self.current_item()
+    @staticmethod
+    def get_item_file_data(item):
         if item:
             return item.data(Qt.UserRole)
 
         return None
+
+    def run(self, item=None):
+        """
+        Функция для запуска указанного файла.
+
+        """
+
+        # file_data = self.current_item_file_data()
+        if item is None:
+            item = self.current_item()
+
+        file_data = self.get_item_file_data(item)
+        if file_data is None:
+            return
+
+        file_name = file_data['file_name'] + " " + file_data['args']
+
+        import os
+        os.system('"{}"'.format(file_name))
 
     # def eventFilter(self, obj, event):
     #     if obj == self.link_list_view:
