@@ -168,13 +168,36 @@ class LinkListView(QWidget):
 
         file_name = file_data['file_name'] + " " + file_data['args']
 
-        # TODO: Посмотреть рабочую папку ярлыков, возможно она отличается от
-        # папки с файлами, на которые указывают ярлыки
         import os
-        import subprocess
+        old_cwd = os.getcwd()
+        os.chdir(os.path.dirname(file_name))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(file_name))
+        os.chdir(old_cwd)
 
-        # Вызов файла из его папки
-        subprocess.Popen(file_name, cwd=os.path.dirname(file_name))
+        # TODO: аналог выше:
+        # try:
+        #     print('subprocess')
+        #
+        #     # TODO: Посмотреть рабочую папку ярлыков, возможно она отличается от
+        #     # папки с файлами, на которые указывают ярлыки
+        #     import subprocess
+        #
+        #     # Вызов файла из его папки
+        #     subprocess.Popen(file_name, cwd=os.path.dirname(file_name))
+        #
+        # except OSError as e:
+        #     print(e)
+        #     print('os.system')
+        #
+        #     old_cwd = os.getcwd()
+        #     os.chdir(os.path.dirname(file_name))
+        #
+        #     # TODO: # print(os.system('"{}" > nul'.format(file_name))) тоже запускает
+        #     # однако при этом ожидает завершения, из-за чего нельзя после
+        #     # запуска пользоваться дальше -- окно перестает отвечать
+        #     QDesktopServices.openUrl(QUrl.fromLocalFile(file_name))
+        #
+        #     os.chdir(old_cwd)
 
 
 if __name__ == '__main__':
