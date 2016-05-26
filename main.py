@@ -273,25 +273,31 @@ ICON_PROGRAM = {}
         pixmap.save(icon_file_name)
         print('Save ico:', icon_file_name)
 
+        # log_text_edit = QTextEdit()
+        # log_text_edit.show()
+
         build_command = 'pyinstaller --onefile --windowed --icon={} -n "{}" link_list_view.py'.format(icon_file_name, NAME_PROGRAM)
         print('build_command:', build_command)
+        # log_text_edit.append('build_command: ' + str(build_command))
 
-        from subprocess import Popen, PIPE
-        with Popen(build_command, universal_newlines=True, stdout=PIPE, stderr=PIPE) as process:
-            # print('OUT:')
-            # for line in process.stdout:
-            #     print(line, end='')
-            #
-            # print('ERR:')
-            for line in process.stderr:
+        from subprocess import Popen, PIPE, STDOUT
+        with Popen(build_command, universal_newlines=True, stdout=PIPE, stderr=STDOUT) as process:
+            print('-' * 10)
+            print('Start:')
+
+            for line in process.stdout:
                 print(line, end='')
-            print()
+                # log_text_edit.append(line)
+
+            print('End.')
             print('-' * 10)
 
         import os
         if os.path.exists(icon_file_name):
             print('Remove ico:', icon_file_name)
             os.remove(icon_file_name)
+
+        # log_text_edit = None
 
     def eventFilter(self, obj, event):
         if obj == self.link_list_view or obj == self.path_to_icon_program_line_edit:
