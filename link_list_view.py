@@ -171,36 +171,6 @@ class LinkListView(QWidget):
         import os
         os.system('"{}"'.format(file_name))
 
-    # def eventFilter(self, obj, event):
-    #     if obj == self.link_list_view:
-    #         if event.type() == QEvent.DragEnter:
-    #             urls = event.mimeData().urls()
-    #
-    #             # Фильтруем: оставляем только файлы
-    #             import os.path
-    #             urls = [url.toLocalFile()
-    #                     for url in urls
-    #                     if os.path.isfile(url.toLocalFile())]
-    #             if urls:
-    #                 event.acceptProposedAction()
-    #                 return True
-    #
-    #         elif event.type() == QEvent.Drop:
-    #             urls = event.mimeData().urls()
-    #             if not urls:
-    #                 return False
-    #
-    #             if obj == self.link_list_view:
-    #                 for url in urls:
-    #                     file_name = url.toLocalFile()
-    #                     self.add_file(file_name)
-    #
-    #             return True
-    #
-    #         return False
-    #     else:
-    #         return super().eventFilter(obj, event)
-
 
 if __name__ == '__main__':
     import sys
