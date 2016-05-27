@@ -30,10 +30,13 @@ def qicon_from_base64(base64_image):
 
 
 def get_icon_base64(file_name, format='PNG', image=None, icon=None):
+    print('get_icon_base64')
     print(file_name)
 
     file_info = QFileInfo(file_name)
-    if not file_info.isFile():
+    print(file_name, file_info.isFile(), file_info.isExecutable(), file_info.isSymLink())
+
+    if not (file_info.isFile() or file_info.isExecutable()):
         return
 
     print('!')
@@ -49,7 +52,11 @@ def get_icon_base64(file_name, format='PNG', image=None, icon=None):
         if icon is None:
             icon = QFileIconProvider().icon(file_info)
 
+        # TODO: если icon.availableSizes() будет пустой, иконку брать из ехе (для .lnk)
+        print('icon: ', icon.availableSizes())
+        print('pixamp: ', icon.pixmap(ICON_SIZE, ICON_SIZE).size())
         image = icon.pixmap(ICON_SIZE, ICON_SIZE).toImage()
+        print('image: ', image.size())
         return base64_from_qimage(image, format)
 
 
@@ -99,18 +106,25 @@ class LinkListView(QWidget):
         self.link_list_view.addItem(item)
 
     def add_file_data(self, file_data):
-        print(file_data['name'], file_data['file_name'], sep=', ')
+        print('add_file_data: ', file_data['name'], file_data['file_name'], sep=', ')
 
         # Работаем только с файлами
-        import os
         file_name = file_data['file_name']
-        if not os.path.isfile(file_name):
+
+        is_file = QFileInfo(file_name).isExecutable() or QFileInfo(file_name).isFile()
+        # TODO: decline
+        # import os
+        # if not os.path.isfile(file_name):
+        if not is_file:
             print('file_name is not file:', file_name)
             return
 
         self.list_files.append(file_data)
 
         icon = qicon_from_base64(file_data['icon'])
+        print("file_data['icon']:", len(file_data['icon']) if file_data['icon'] is not None else 'None')
+        print(icon.pixmap(ICON_SIZE).size())
+        print()
         tool_tip = file_data['name'] + "\n\n" + file_data['file_name']
         if file_data['args']:
             tool_tip += ' ' + file_data['args']
@@ -121,7 +135,7 @@ class LinkListView(QWidget):
         self.add_item(item)
 
     def add_file(self, file_name):
-        print(file_name)
+        print('add_file, file_name:', file_name)
 
         file_info = QFileInfo(file_name)
 
@@ -134,6 +148,7 @@ class LinkListView(QWidget):
             args = ''
 
         base64_image = get_icon_base64(file_name)
+        print('base64_image: ', len(base64_image) if base64_image is not None else 'None')
         file_data = {
             'name': name,
             'file_name': file_name,
