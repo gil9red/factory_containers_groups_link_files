@@ -104,8 +104,13 @@ class LinkListView(QWidget):
         # Работаем только с файлами
         import os
         file_name = file_data['file_name']
+
+        if not os.path.exists(file_name):
+            print('{} is not exists!'.format(file_name))
+            return
+
         if not os.path.isfile(file_name):
-            print('file_name is not file:', file_name)
+            print('{} is not file!'.format(file_name))
             return
 
         self.list_files.append(file_data)
