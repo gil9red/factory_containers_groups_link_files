@@ -42,6 +42,7 @@ except:
 # NetBeans IDE 8, C:\Program Files (x86)\NetBeans 8.0.1\bin\netbeans64.exe
 # file_name is not file: C:\Program Files (x86)\NetBeans 8.0.1\bin\netbeans64.exe
 # TODO: возможность добавлять именно ярлыки, а не файлы, на которые они указывают
+# TODO: может, использоваться сцену для отображения?
 
 class MainWindow(QMainWindow):
     def __init__(self):
